@@ -1,2 +1,13 @@
-# Restaurant-POS-System
-Restaurant Management and Online Food Ordering System is a full-stack Django web application that integrates online ordering, billing, kitchen management, invoice generation, revenue tracking, and admin controls. Built with Django, MySQL, HTML, CSS, Bootstrap, and JavaScript.
+**Restaurant Management and Online Food Ordering System**
+
+The Restaurant Management and Online Food Ordering System is a comprehensive full-stack web application designed to automate and streamline restaurant operations while providing customers with a convenient online food ordering experience. The system is developed using Django as the backend framework, MySQL as the database management system, and HTML, CSS, Bootstrap, and JavaScript for creating an interactive and responsive user interface.
+
+The platform combines multiple restaurant functions into a single integrated solution, including customer ordering, restaurant operations management, kitchen workflow monitoring, and administrative control. Customers can create accounts, securely log in, browse food categories and menu items, add products to their cart, place online orders, generate invoices, and track the real-time status of their orders. This improves customer convenience and enhances overall satisfaction by providing transparency throughout the ordering process.
+
+Restaurant operators can efficiently manage both online and walk-in customer orders through a dedicated dashboard. The system allows operators to create orders, search invoices, view order history, generate bills, and print receipts, reducing manual work and improving service speed. The integrated billing and invoice management features ensure accurate transaction records and facilitate smooth daily operations.
+
+A specialized kitchen management module enables kitchen staff to monitor incoming orders and update their progress through different stages, such as Pending, Preparing, and Delivered. This real-time communication between operators and kitchen staff minimizes delays, improves coordination, and ensures timely order fulfillment.
+
+The administrative panel provides centralized control over the entire system. Administrators can manage menu categories and food items, create and manage operator and kitchen user accounts, monitor orders, track revenue and sales performance, search invoices, and generate detailed reports. Additionally, the system includes a database backup feature that allows administrators to download MySQL backup files, ensuring data security and easy recovery when required.
+
+By integrating customer services, operational management, kitchen coordination, and administrative monitoring into a unified platform, the Restaurant Management and Online Food Ordering System significantly improves efficiency, reduces operational complexity, enhances customer experience, and supports the digital transformation of modern restaurant businesses.

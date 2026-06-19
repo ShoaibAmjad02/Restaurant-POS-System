@@ -1,0 +1,30 @@
+{% load static i18n %}
+
+<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}" {% block html_attributes %}{% endblock html_attributes %}>
+
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+  <title>{% block title %}{% endblock title %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description"
+        content="2026 Restaurant. Made for Restaurant"/>
+  <meta name="author" content="coderthemes"/>
+
+  <link rel="icon" href="{% static 'demos/images/favicon.ico' %}">
+
+  {% block css %}{% endblock css %}
+
+</head>
+
+<body {% block body_attributes %}{% endblock body_attributes %}>
+
+{% block content %}{% endblock content %}
+
+{% block modal %}{% endblock modal %}
+
+{% block javascript %}{% endblock javascript %}
+</body>
+</html>

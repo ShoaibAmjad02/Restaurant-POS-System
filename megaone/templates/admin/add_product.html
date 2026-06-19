@@ -1,0 +1,247 @@
+
+{% load static i18n %}
+
+{% block html_attributes %}{% endblock html_attributes %}
+
+{% block title %}Add Products{% endblock title %}
+
+{% block css %}
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+          <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link href="{% static 'food-delivery/css/style.css' %}" rel="stylesheet">
+{% endblock css %}
+
+{% block body_attributes %}data-spy="scroll" data-target=".navbar" data-offset="90"{% endblock body_attributes %}
+
+{% block content %}
+
+<!-- Preloader -->
+<div class="preloader">
+    <div class="center">
+        <div class="spinner">
+            <div class="blob top"></div>
+            <div class="blob bottom"></div>
+            <div class="blob left"></div>
+            <div class="blob move-blob"></div>
+        </div>
+    </div>
+</div>
+<!-- Preloader End -->
+
+<!--Banner Sec start-->
+<section class="main-banner cursor-light bg-1" id="main-banner">
+    <div id="rev_slider_1_1_wrapper" class="rev_slider_wrapper fullscreen-container" data-alias="megaone-food-slider1"
+        data-source="gallery" style="background:transparent;padding:0px;">
+        <!-- START REVOLUTION SLIDER 5.4.8.1 fullscreen mode -->
+        <div id="rev_slider_1_1" class="rev_slider fullscreenbanner" style="display:none;" data-version="5.4.8.1">
+            <ul> <!-- SLIDE  -->
+                <li data-index="rs-1" data-transition="fade" data-slotamount="default" data-hideafterloop="0"
+                    data-hideslideonmobile="off" data-easein="default" data-easeout="default" data-masterspeed="300"
+                    data-rotate="0" data-saveperformance="off" data-title="Slide" data-param1="" data-param2=""
+                    data-param3="" data-param4="" data-param5="" data-param6="" data-param7="" data-param8=""
+                    data-param9="" data-param10="" data-description="">
+                    <!-- MAIN IMAGE -->
+                    <!--<img src="img/transparent.png' %}" data-bgcolor='#ffffff' style='background:#ffffff' alt=""  data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="off" class="rev-slidebg" data-no-retina>-->
+                    <!-- LAYERS -->
+
+                    <!-- LAYER NR. 5 -->
+                    <!--                    ele 1-->
+
+                    <!-- LAYER NR. 6 -->
+                    <!--                    //ele 3-->
+                    <div class="tp-caption   tp-resizeme" id="slide-1-layer-8"
+                        data-x="['right','right','right','right']" data-hoffset="['-230','-144','-100','-50']"
+                        data-y="['middle','top','bottom','bottom']" data-voffset="['40','100','112','80']"
+                        data-width="none" data-height="none" data-whitespace="normal"
+                        data-visibility="['on','on','off','off']" data-type="image" data-basealign="slide"
+                        data-responsive_offset="on"
+                        data-frames='[{"delay":359.9609375,"speed":1500,"frame":"0","from":"x:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"opacity:0;","ease":"Power3.easeInOut"}]'
+                        data-textAlign="['inherit','inherit','inherit','inherit']" data-paddingtop="[0,0,0,0]"
+                        data-paddingright="[0,0,0,0]" data-paddingbottom="[0,0,0,0]" data-paddingleft="[0,0,0,0]"
+                        style="z-index: 10;"><img data-depth="0.03" src="{% static 'food-delivery/img/slider-ele3.png' %}" alt=""
+                            data-ww="['545px','327px','264px','174px']" data-hh="['498px','299px','251px','161px']"
+                            data-no-retina> </div>
+                          
+                            
+
+<div class="container mt-5" style = "color: #ffff;">
+    <a href="/users/products/"
+   style="
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        width:45px;
+        height:45px;
+        background:#0d6efd;
+        color:white;
+        margin-bottom:20px;
+        border-radius:50%;
+        text-decoration:none;
+        box-shadow:0 4px 10px rgba(0,0,0,0.3);
+   ">
+
+    <i class="bi bi-arrow-left-circle-fill" style="font-size:20px;"></i>
+
+</a>
+    <h2>Add Product</h2>
+
+    <form method="POST"
+          enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <div class="mb-3">
+
+            <label>Category</label>
+
+            <select name="category"
+                    class="form-control">
+
+                {% for category in categories %}
+
+                <option value="{{ category.id }}">
+                    {{ category.name }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        <div class="mb-3">
+
+            <label>Name</label>
+
+            <input type="text"
+                   name="name"
+                   class="form-control"
+                   required>
+
+        </div>
+
+        <div class="mb-3">
+
+            <label>Description</label>
+
+            <textarea name="description"
+                      class="form-control"></textarea>
+
+        </div>
+
+        <div class="mb-3">
+
+            <label>Price</label>
+
+            <input type="number"
+                   step="0.01"
+                   name="price"
+                   class="form-control"
+                   required>
+
+        </div>
+
+        <div class="mb-3">
+
+            <label>Image</label>
+
+            <input type="file"
+                   name="image"
+                   class="form-control">
+
+        </div>
+
+        <div class="form-check mb-3">
+
+            <input type="checkbox"
+                   class="form-check-input"
+                   name="available"
+                   checked>
+
+            <label class="form-check-label">
+                Available
+            </label>
+
+        </div>
+
+        <button type="submit"
+                class="btn btn-primary">
+
+            Save Product
+
+        </button>
+
+    </form>
+
+</div>
+
+                    <!-- LAYER NR. 11 -->
+                    <!--                    ele 4-->
+                    <div class="tp-caption   tp-resizeme" id="slide-1-layer-15" data-x="['left','left','left','left']"
+                        data-hoffset="['-1','-1','0','0']" data-y="['bottom','bottom','bottom','bottom']"
+                        data-voffset="['10','0','0','0']" data-width="none" data-height="none" data-whitespace="normal"
+                        data-visibility="['on','on','off','off']" data-type="image" data-basealign="slide"
+                        data-responsive_offset="on"
+                        data-frames='[{"delay":9.9609375,"speed":1500,"frame":"0","from":"x:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","to":"o:1;","ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"opacity:0;","ease":"Power3.easeInOut"}]'
+                        data-textAlign="['inherit','inherit','inherit','inherit']" data-paddingtop="[0,0,0,0]"
+                        data-paddingright="[0,0,0,0]" data-paddingbottom="[0,0,0,0]" data-paddingleft="[0,0,0,0]"
+                        style="z-index: 15;"><img data-depth="0.05" src="{% static 'food-delivery/img/slider-ele4.png' %}" alt=""
+                            data-ww="['199px','191px','200px','150px']" data-hh="['270px','301px','259px','200px']"
+                            data-no-retina> </div>
+                </li>
+            </ul>
+            <div class="tp-bannertimer tp-bottom" style="visibility: hidden !important;"></div>
+        </div>
+    </div>
+    <!-- END REVOLUTION SLIDER -->
+     
+</section>
+<!--Banner Sec End-->
+
+<!--Animated Cursor-->
+<div class="aimated-cursor">
+    <div class="cursor">
+        <div class="cursor-loader"></div>
+    </div>
+</div>
+<!--Animated Cursor End-->
+
+<!--Scroll Top Start-->
+<span class="scroll-top-arrow"><i class="fas fa-angle-up"></i></span>
+<!--Scroll Top End-->
+
+{% endblock content %}
+
+
+{% block javascript %}
+<script src="{% static 'vendor/js/bundle.min.js' %}"></script>
+<!-- Plugin Js -->
+<script src="{% static 'vendor/js/jquery.fancybox.min.js' %}"></script>
+<script src="{% static 'vendor/js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'vendor/js/parallaxie.min.js' %}"></script>
+<script src="{% static 'vendor/js/wow.min.js' %}"></script>
+<!-- REVOLUTION JS FILES -->
+<script src="{% static 'vendor/js/jquery.themepunch.tools.min.js' %}"></script>
+<script src="{% static 'vendor/js/jquery.themepunch.revolution.min.js' %}"></script>
+<!-- SLIDER REVOLUTION EXTENSIONS -->
+<script src="{% static 'vendor/js/extensions/revolution.extension.actions.min.js' %}"></script>
+<script src="{% static 'vendor/js/extensions/revolution.extension.carousel.min.js' %}"></script>
+<script src="{% static 'vendor/js/extensions/revolution.extension.kenburn.min.js' %}"></script>
+<script src="{% static 'vendor/js/extensions/revolution.extension.layeranimation.min.js' %}"></script>
+<script src="{% static 'vendor/js/extensions/revolution.extension.migration.min.js' %}"></script>
+<script src="{% static 'vendor/js/extensions/revolution.extension.navigation.min.js' %}"></script>
+<script src="{% static 'vendor/js/extensions/revolution.extension.parallax.min.js' %}"></script>
+<script src="{% static 'vendor/js/extensions/revolution.extension.slideanims.min.js' %}"></script>
+<script src="{% static 'vendor/js/extensions/revolution.extension.video.min.js' %}"></script>
+<!--Tilt Js-->
+<script src="{% static 'vendor/js/TweenMax.min.js' %}"></script>
+<!-- custom script-->
+<script src="{% static 'food-delivery/js/slick.min.js' %}"></script>
+<script src="{% static 'food-delivery/js/select2.min.js' %}"></script>
+<script src="{% static 'food-delivery/js/notify.min.js' %}"></script>
+<script src="{% static 'vendor/js/contact_us.js' %}"></script>
+<script src="{% static 'food-delivery/js/script.js' %}"></script>
+{% endblock javascript %}

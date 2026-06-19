@@ -1,0 +1,636 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Operator Dashboard</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+body{
+    background:#0f172a;
+    color:white;
+}
+
+/* HEADER */
+.header{
+    background:linear-gradient(135deg,#6366f1,#3b82f6);
+    padding:20px;
+    border-radius:16px;
+}
+
+.btn-danger{
+    float:right;
+    margin-bottom:20px;
+    background: #ef4444;
+    border:none;
+}
+/* CARD */
+.card{
+    border-radius:16px;
+}
+
+/* CART ICON */
+.cart-icon{
+    position:fixed;
+    top:20px;
+    right:20px;
+    width:55px;
+    height:55px;
+    background: green;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font-size:22px;
+    z-index:999;
+}
+
+.cart-count{
+    position:absolute;
+    top:-5px;
+    right:-5px;
+    background: red;
+    color:white;
+    min-width:22px;
+    height:22px;
+    line-height:22px;
+    font-size:12px;
+}
+
+.cart-box{
+    position:fixed;
+    top:80px;
+    right:20px;
+    width:320px;
+    background:white;
+    color:black;
+    border-radius:12px;
+    padding:12px;
+    display:none;
+    z-index:999;
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+.cart-icon:hover + .cart-box{
+    display:block;
+}
+
+.cart-item{
+    border-bottom:1px solid #eee;
+    padding:8px 0;
+}
+
+.icon-btn{
+    border:none;
+    background:none;
+    font-size:16px;
+    cursor:pointer;
+}
+.invoice-card{
+    background:#f8fafc;
+    border-left:5px solid #3b82f6;
+    border-radius:12px;
+    padding:12px;
+    margin-bottom:10px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.invoice-card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(0,0,0,.15);
+    background:white;
+}
+
+.invoice-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.invoice-number{
+    font-weight:700;
+    color:#1e293b;
+}
+
+.invoice-total{
+    font-size:18px;
+    font-weight:bold;
+    color:#16a34a;
+}
+
+.invoice-customer{
+    color:#475569;
+    margin-top:5px;
+}
+
+.invoice-order{
+    font-size:13px;
+    color:#64748b;
+}
+@media (max-width: 768px){
+
+    .main-content{
+        margin-left:0;
+    }
+
+    #heldSidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+        margin-bottom:15px;
+    }
+
+    .cart-box{
+        width:95%;
+        right:10px;
+        left:10px;
+    }
+
+    .cart-icon{
+        width:50px;
+        height:50px;
+    }
+
+    .header h3{
+        font-size:1.4rem;
+    }
+
+    .logout-btn{
+        float:none;
+        width:100%;
+        margin-bottom:15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- CART ICON -->
+<div class="cart-icon">
+    <i class="bi bi-cart-fill"></i><span class="badge rounded-circle cart-count">0</span>
+</div>
+
+<!-- CART BOX -->
+<div class="cart-box" id="cartBox">
+    <h6>Mini Cart</h6>
+    <div id="cartItems"></div>
+    <hr>
+    <b>Total: Rs <span id="cartTotal">0</span></b>
+
+    <button class="btn btn-primary w-100 mt-2" onclick="createInvoice()">
+        Generate Invoice
+    </button>
+</div>
+<div class="container py-4">
+     
+<a href="{% url 'users:logout' %}"
+               class="btn btn-danger">
+                <i class="bi bi-box-arrow-right"></i>
+                Logout
+            </a>
+    <div class="header mb-4">
+        <h3>Operator Dashboard</h3>
+        <p class="mb-0">Fast billing system</p>
+    </div>
+
+    <!-- CUSTOMER -->
+    <div class="card p-3 mb-3 text-dark">
+        <input id="customerName" class="form-control mb-2" placeholder="Customer Name">
+        <input id="customerEmail" class="form-control" placeholder="Customer Email">
+    </div>
+
+    <!-- PRODUCT SEARCH -->
+    <div class="card p-3 text-dark">
+        <input id="productSearch" class="form-control" placeholder="Search product..." onkeyup="searchProducts()">
+        <div id="searchResults" class="mt-3"></div>
+    </div>
+    
+    <div class="card p-3 mb-3 text-dark" style="margin-top:20px;">
+
+    <h5>Search Invoice</h5>
+
+    <input type="text"
+           id="searchEmail"
+           class="form-control"
+           placeholder="Search by email / name / invoice number / Order No"
+           oninput="searchInvoice()">
+
+    <div id="results" class="mt-3"></div>
+</div>
+    <button class="btn btn-warning w-100 mt-2" onclick="holdInvoice()">
+    Hold Invoice
+</button>
+<button class="btn btn-success w-100 mt-2" onclick="newInvoice()">
+    New Invoice
+</button>
+  <!-- HELD INVOICE SIDEBAR -->
+<div id="heldSidebar" style="
+position:fixed;
+left:0;
+top:0;
+width:260px;
+height:100vh;
+background:#111827;
+color:white;
+padding:15px;
+overflow:auto;
+z-index:1000;
+">
+
+<h5>📋 Held Invoices</h5>
+
+<div id="heldList"></div>
+
+</div>
+<div style="height:100vh;"></div> <!-- dummy space -->
+</div>
+
+<script>
+
+/* =========================
+   UNIQUE CART PER OPERATOR
+========================= */
+let cartBox = document.getElementById("cartBox");
+let cartIcon = document.querySelector(".cart-icon");
+
+cartIcon.addEventListener("mouseenter", ()=>{
+    cartBox.style.display = "block";
+});
+
+cartBox.addEventListener("mouseenter", ()=>{
+    cartBox.style.display = "block";
+});
+
+cartIcon.addEventListener("mouseleave", ()=>{
+    setTimeout(()=>{
+        if(!cartBox.matches(':hover')){
+            cartBox.style.display = "none";
+        }
+    }, 200);
+});
+
+cartBox.addEventListener("mouseleave", ()=>{
+    cartBox.style.display = "none";
+});
+
+
+const operatorId = "{{ request.user.id }}";
+const CART_KEY = "cart_" + operatorId;
+
+let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+
+/* SAVE CART */
+function saveCart(){
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+
+/* =========================
+   SEARCH PRODUCTS
+========================= */
+function searchProducts(){
+
+    let q = document.getElementById("productSearch").value;
+
+    fetch(`/users/operator/search-products/?q=${q}`)
+    .then(r=>r.json())
+    .then(data=>{
+
+        let html = "";
+
+        data.products.forEach(p=>{
+            html += `
+            <div class="card p-2 mb-2 text-dark">
+                <b>${p.name}</b> - Rs ${p.price}
+
+                <button class="btn btn-success btn-sm float-end"
+                    onclick="addToCart(${p.id}, '${p.name}', ${p.price})">
+                    Add
+                </button>
+            </div>`;
+        });
+
+        document.getElementById("searchResults").innerHTML = html;
+    });
+}
+
+
+/* =========================
+   ADD TO CART
+========================= */
+function addToCart(id,name,price){
+
+    let item = cart.find(x=>x.id===id);
+
+    if(item){
+        item.qty += 1;
+    }else{
+        cart.push({id,name,price,qty:1});
+    }
+
+    saveCart();
+    renderCart();
+}
+
+/* =========================
+   UPDATE QTY + DELETE
+========================= */
+function increase(id){
+    cart.find(x=>x.id===id).qty++;
+    saveCart(); renderCart();
+}
+
+function decrease(id){
+    let item = cart.find(x=>x.id===id);
+    if(item.qty > 1){
+        item.qty--;
+    } else {
+        cart = cart.filter(x=>x.id!==id);
+    }
+    saveCart(); renderCart();
+}
+
+function removeItem(id){
+    cart = cart.filter(x=>x.id!==id);
+    saveCart(); renderCart();
+}
+
+/* =========================
+   RENDER CART
+========================= */
+function renderCart(){
+
+    let html = "";
+    let total = 0;
+    let count = 0;   // <-- ADD THIS
+
+    cart.forEach(item => {
+
+        total += item.price * item.qty;
+        count += item.qty;   // <-- COUNT QUANTITY
+
+        html += `
+        <div class="cart-item">
+
+            <b>${item.name}</b><br>
+
+            Rs ${item.price} x ${item.qty}<br>
+
+            <button class="icon-btn" onclick="decrease(${item.id})">➖</button>
+            <button class="icon-btn" onclick="increase(${item.id})">➕</button>
+            <button class="icon-btn text-danger" onclick="removeItem(${item.id})">🗑</button>
+
+        </div>`;
+    });
+
+    document.getElementById("cartItems").innerHTML =
+        html || "<small>No items</small>";
+
+    document.getElementById("cartTotal").innerText = total;
+
+    document.querySelector(".cart-count").innerText = count;
+}
+
+/* =========================
+   CREATE INVOICE
+========================= */
+function createInvoice(){
+
+    fetch("/users/operator/create-invoice/",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json",
+            "X-CSRFToken":"{{ csrf_token }}"
+        },
+        body:JSON.stringify({
+            cart:cart,
+            customer_name:document.getElementById("customerName").value,
+            customer_email:document.getElementById("customerEmail").value
+        })
+    })
+    .then(r=>r.json())
+    .then(data=>{
+        if(data.success){
+            cart = [];
+            saveCart();
+            renderCart();
+
+            window.open(`/users/invoice/${data.invoice_id}/`,"_blank");
+        }
+    });
+}
+function holdInvoice(){
+
+    if(!cart || cart.length === 0){
+        alert("Cart is empty");
+        return;
+    }
+
+    let id = "HOLD-" + Date.now();
+
+    let all = JSON.parse(localStorage.getItem("held_invoices") || "{}");
+
+    all[id] = {
+        id: id,
+        date: new Date().toLocaleString(),
+        cart: JSON.parse(JSON.stringify(cart))
+    };
+
+    localStorage.setItem("held_invoices", JSON.stringify(all));
+
+    cart = [];
+    saveCart();
+    renderCart();
+
+    loadHeldInvoices();   // 🔥 FORCE UPDATE HERE
+
+    console.log("Held invoices:", all); // DEBUG
+
+    alert("Invoice Held!");
+}
+function loadHeldInvoices(){
+
+    let container = document.getElementById("heldList");
+    if(!container) return;
+
+    let all = JSON.parse(localStorage.getItem("held_invoices") || "{}");
+
+    let keys = Object.keys(all);
+
+    if(keys.length === 0){
+        container.innerHTML = `<div class="text-muted">No held invoices yet</div>`;
+        return;
+    }
+
+    let html = "";
+
+    keys.forEach(key => {
+
+    let inv = all[key];
+
+    html += `
+    <div style="
+        background:#1f2937;
+        padding:10px;
+        margin-bottom:10px;
+        border-radius:10px;
+        cursor:pointer;
+        position:relative;
+    ">
+
+        <div onclick="restoreInvoice('${key}')">
+            <b>${inv.id}</b><br>
+            <small>${inv.date}</small><br>
+            Items: ${(inv.cart || []).length}
+        </div>
+
+        <button onclick="deleteHeld('${key}')"
+            style="
+                position:absolute;
+                right:8px;
+                top:8px;
+                background:red;
+                border:none;
+                color:white;
+                border-radius:5px;
+                padding:2px 6px;
+            ">
+            🗑
+        </button>
+
+    </div>
+    `;
+});
+
+    container.innerHTML = html;
+}
+function restoreInvoice(id){
+
+    let all = JSON.parse(localStorage.getItem("held_invoices") || "{}");
+
+    if(!all[id]) return;
+
+    // restore cart
+    cart = JSON.parse(JSON.stringify(all[id].cart || []));
+
+    saveCart();
+    renderCart();
+    
+     // Clear customer fields
+    document.getElementById("customerName").value = "";
+    document.getElementById("customerEmail").value = "";
+    
+    // ❌ REMOVE FROM HELD AFTER RESTORE
+    delete all[id];
+
+    localStorage.setItem("held_invoices", JSON.stringify(all));
+
+    loadHeldInvoices(); // refresh sidebar
+
+    alert("Invoice Restored & Removed from Hold!");
+}
+function deleteHeld(id){
+
+    let all = JSON.parse(localStorage.getItem("held_invoices") || "{}");
+
+    delete all[id];
+
+    localStorage.setItem("held_invoices", JSON.stringify(all));
+
+    loadHeldInvoices(); // MUST refresh UI
+}
+function newInvoice(){
+    cart = [];
+    saveCart();
+    renderCart();
+    // Clear customer fields
+    document.getElementById("customerName").value = "";
+    document.getElementById("customerEmail").value = "";
+}
+function searchInvoice() {
+
+    let q = document.getElementById("searchEmail").value;
+
+    if (q.length < 2) {
+        document.getElementById("results").innerHTML = "";
+        return;
+    }
+
+    fetch("/users/operator/search-invoice/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({ email: q })
+    })
+    .then(r => r.json())
+    .then(data => {
+
+        let box = document.getElementById("results");
+        box.innerHTML = "";
+
+        if (!data.invoices || !data.invoices.length) {
+            box.innerHTML = `
+                <div class="alert alert-warning text-dark">
+                    No invoices found
+                </div>`;
+            return;
+        }
+
+        data.invoices.forEach(inv => {
+            box.innerHTML += `
+<div class="invoice-card"
+     onclick="openInvoice(${inv.id})">
+
+    <div class="invoice-top">
+        <div>
+            <div class="invoice-number">
+                <i class="bi bi-receipt"></i>
+                ${inv.invoice_number}
+            </div>
+
+            <div class="invoice-order">
+                Order: ${inv.order_number || '-'}
+            </div>
+        </div>
+
+        <div class="invoice-total">
+            Rs ${inv.total}
+        </div>
+    </div>
+
+    <div class="invoice-customer">
+        <i class="bi bi-person"></i>
+        ${inv.customer_name || 'Walk-in Customer'}
+    </div>
+
+    <div class="mt-2">
+        <span class="badge bg-primary">
+            ${inv.status || 'Pending'}
+        </span>
+    </div>
+
+</div>
+`;
+        });
+
+    });
+}
+function openInvoice(id){
+    window.open(`/users/invoice/${id}/`, "_blank");
+}
+/* INIT */
+document.addEventListener("DOMContentLoaded", function(){
+    renderCart();
+    loadHeldInvoices();
+});
+</script>
+
+</body>
+</html>

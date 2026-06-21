@@ -53,12 +53,21 @@ HOST = os.environ.get("MYSQLHOST")
 
 DATABASES = {
     "default": {
+<<<<<<< HEAD
         "ENGINE": "django.db.backends.mysql",
         "NAME": os.environ.get("MYSQLDATABASE", "railway"),
         "USER": os.environ.get("MYSQLUSER", "root"),
         "PASSWORD": os.environ.get("123456"),
         "HOST": HOST,
         "PORT": os.environ.get("MYSQLPORT", "3306"),
+=======
+        "ENGINE": env("DB_ENGINE", default="django.db.backends.mysql"),
+        "NAME": env("DB_NAME", default="railway"),
+        "USER": env("MYSQLUSER", default="root"),
+        "PASSWORD": env("MYSQLPASSWORD", default="123456"),
+        "HOST": env("MYSQLHOST", default="localhost"),
+        "PORT": env("MYSQLPORT", default="3306"),
+>>>>>>> b0909f8 (Restaurant)
     }
 }
 
@@ -79,7 +88,7 @@ DJANGO_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
-    # "django.contrib.sites",
+    "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # "django.contrib.humanize", # Handy template tags

@@ -14,5 +14,4 @@ ALLOWED_HOSTS = [
     "*"
 ]
 
-
 DATABASES["default"]["CONN_MAX_AGE"] = 60

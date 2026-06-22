@@ -1,33 +1,42 @@
 #!/bin/bash
 set -e
 
-echo "Starting deployment..."
+echo "🚀 Starting Django deployment..."
 
-# Run migrations with retry (DB may take a moment to be ready)
-MAX_RETRIES=30
-RETRY_INTERVAL=2
-RETRIES=0
+echo "⏳ Waiting for database..."
 
-echo "Running database migrations..."
-while [ $RETRIES -lt $MAX_RETRIES ]; do
-    if python manage.py migrate --noinput 2>/dev/null; then
-        echo "Migrations completed successfully."
+MAX_RETRIES=60
+COUNT=0
+
+while true; do
+    if python manage.py check --database default > /dev/null 2>&1; then
+        echo "✅ Database is ready!"
         break
     fi
-    RETRIES=$((RETRIES + 1))
-    echo "Database not ready (attempt $RETRIES/$MAX_RETRIES). Retrying in ${RETRIES}x${RETRY_INTERVAL}s..."
-    sleep $((RETRY_INTERVAL * RETRIES))
+
+    COUNT=$((COUNT + 1))
+
+    if [ $COUNT -ge $MAX_RETRIES ]; then
+        echo "❌ Database connection failed after $MAX_RETRIES attempts"
+        exit 1
+    fi
+
+    echo "Database not ready ($COUNT/$MAX_RETRIES). Waiting 5 seconds..."
+    sleep 5
 done
 
-if [ $RETRIES -eq $MAX_RETRIES ]; then
-    echo "ERROR: Could not connect to database after $MAX_RETRIES attempts."
-    exit 1
-fi
 
-# Collect static files
-echo "Collecting static files..."
+echo "🔄 Running migrations..."
+python manage.py migrate --noinput
+
+
+echo "📦 Collecting static files..."
 python manage.py collectstatic --noinput
 
-# Start gunicorn
-echo "Starting gunicorn..."
-exec gunicorn config.wsgi:application -c gunicorn.conf.py
+
+echo "🔥 Starting Gunicorn..."
+
+exec gunicorn config.wsgi:application \
+    --bind 0.0.0.0:$PORT \
+    --workers 3 \
+    --timeout 120
